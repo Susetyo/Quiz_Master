@@ -5,6 +5,7 @@ import { Card, Col, Row } from 'antd';
 class ScoreBoard extends React.Component{
   constructor(props){
     super(props);
+    console.log(this.props.scoreboard)
     this.state = {
       right_answer: 0,
       false_answer: 0

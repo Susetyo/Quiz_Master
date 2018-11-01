@@ -12,14 +12,27 @@ class QuestForm extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      lists: []
+      lists: [],
+      answerLists: []
     }
   }
 
   checkAnswer(data){
     axios.post('http://localhost:3010/api/v1/check_answer',{question: data } )
     .then(res => {
-      console.log(res.status)
+      let score = {
+        right: res.data.data.length, 
+        wrong: (this.state.lists.length-res.data.data.length)
+      }
+
+      let answers = [ ...this.state.answerLists, score ]
+
+ 
+      this.setState({
+        answerLists: answers 
+      });
+
+      this.props.countScoreBoard(this.state.answerLists)
     })
     .catch(error => {
       console.log(error)
@@ -33,9 +46,9 @@ class QuestForm extends React.Component{
     
     axios.get('http://localhost:3010/api/v1/questions')
     .then(response => {
-        this.setState({
-            lists: response.data
-        })
+      this.setState({
+        lists: response.data
+      })
     })
     .catch(error => console.log(error))
   }
@@ -55,28 +68,9 @@ class QuestForm extends React.Component{
             })
           }
         }
-
         this.checkAnswer(_answer);
-
-
       }
     });
-
-    console.log(_answer)
-
-    let result = []
-
-    this.state.lists.map( m => {
-       _answer.map( answer => {
-        if(m.id == answer.id && m.answer === answer.answer)
-           result.push(answer)
-      })
-    })
-
-    console.log(result)
-
-
-    
   }
 
   render(){
